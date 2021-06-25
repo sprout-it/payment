@@ -1,4 +1,4 @@
-import { Layout, Col, Row } from 'antd'
+import { Layout, Col, Row, Card } from 'antd'
 import 'antd/dist/antd.css'
 import axios from 'axios'
 import Image from 'next/image'
@@ -26,12 +26,14 @@ const Index = ({ structure }) => {
       <Layout.Header style={{ width: '100vw', height: 50, background: "green" }}>
       </Layout.Header>
       <Col span={24}>
-        <Row justify='center'>คุณ ทดสอบ สมมติ</Row>
-        <Row justify='center'>
-          <Image src={`data:image/jpeg;base64,${qrUrl}`} width={200} height={200} />
-        </Row>
-        <Row justify='center'>จำนวนเงิน 100 บาท</Row>
-        <Row justify='center'>**ใบชำระเงินนี้หมดอายุเวลา {dayjs(Date.now() + 1000 * 60).format('YYYY-MM-DD HH:mm:ss')}</Row>
+        <Card style={{background:'#f7f7f7'}}>
+          <Row justify='center'>คุณ ทดสอบ สมมติ</Row>
+          <Row justify='center'>
+            <Image src={`data:image/jpeg;base64,${qrUrl}`} width={200} height={200} />
+          </Row>
+          <Row justify='center'>จำนวนเงิน 100 บาท</Row>
+          <Row justify='center'>**ใบชำระเงินนี้หมดอายุเวลา {dayjs(Date.now() + 1000 * 60).format('YYYY-MM-DD HH:mm:ss')}</Row>
+        </Card>
       </Col>
     </Layout >
   return <>Loading...</>
