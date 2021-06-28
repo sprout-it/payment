@@ -4,6 +4,7 @@ import axios from 'axios'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
+
 const ENDPOINT = process.env.NEXT_PUBLIC_ENDPOINT
 
 const Index = ({ structure }) => {
@@ -23,10 +24,10 @@ const Index = ({ structure }) => {
 
   if (qrUrl)
     return <Layout style={{ width: '100vw', height: '100vh' }}>
-      <Layout.Header style={{ width: '100vw', height: 50, background: "green" }}>
+      <Layout.Header style={{ width: '100vw', height: 50, background: "#4fc237" }}>
       </Layout.Header>
-      <Col span={24}>
-        <Card style={{background:'#f7f7f7'}}>
+      <Row justify='center' align='middle'>
+        <Card style={{ background: '#f7f7f7' }}>
           <Row justify='center'>คุณ ทดสอบ สมมติ</Row>
           <Row justify='center'>
             <Image src={`data:image/jpeg;base64,${qrUrl}`} width={200} height={200} />
@@ -34,7 +35,7 @@ const Index = ({ structure }) => {
           <Row justify='center'>จำนวนเงิน 100 บาท</Row>
           <Row justify='center'>**ใบชำระเงินนี้หมดอายุเวลา {dayjs(Date.now() + 1000 * 60).format('YYYY-MM-DD HH:mm:ss')}</Row>
         </Card>
-      </Col>
+      </Row>
     </Layout >
   return <>Loading...</>
 }
