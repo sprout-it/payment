@@ -1,6 +1,6 @@
 
 // const dev = process.env.NEXT_PUBLIC_NODE_ENV == true ? true : false;
-const next = require('next')({ dev })
+const next = require('next')({ dev: true })
 const handle = next.getRequestHandler()
 const app = require('express')();
 const expressWs = require('express-ws')(app);
