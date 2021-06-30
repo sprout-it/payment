@@ -1,15 +1,28 @@
-import { Layout, Col, Row, Card } from 'antd'
+import { Layout, Col, Row, Card, Typography } from 'antd'
 import 'antd/dist/antd.css'
 import axios from 'axios'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 const ENDPOINT = process.env.NEXT_PUBLIC_ENDPOINT
+const client = new W3CWebSocket(`ws://127.0.0.1:3000/wait`)
 
-const Index = ({ structure }) => {
+const Index = ({
+  name,
+  callbackUrl,
+  price,
+  // token,
+  expired,
+}) => {
 
-  const [struct, setStruct] = useState(structure)
+  const [struct, setStruct] = useState({
+    name,
+    callbackUrl,
+    price,
+    // token,
+    expired,
+  })
 
   const [qrUrl, setQrImg] = useState('')
 
@@ -20,63 +33,64 @@ const Index = ({ structure }) => {
 
   useEffect(() => {
     genQr()
+    client.onopen = () => {
+      console.log('WebSocket Client Connected');
+      client.send('test')
+    };
+    client.onmessage = (message) => {
+      console.log(message)
+      if (message.data == 'confirm') {
+        window.location.assign(callbackUrl)
+      }
+    };
   }, [])
 
-  if (qrUrl)
-    return <Layout style={{ width: '100vw', height: '100vh' }}>
-      <Layout.Header style={{ width: '100vw', height: 50, background: "#4fc237" }}>
-      </Layout.Header>
-      <Row justify='center' align='middle'>
-        <Card style={{ background: '#f7f7f7' }}>
-          <Row justify='center'>คุณ ทดสอบ สมมติ</Row>
-          <Row justify='center'>
-            <Image src={`data:image/jpeg;base64,${qrUrl}`} width={200} height={200} />
+  // if (qrUrl)
+  return <Layout style={{ width: '100vw', height: '100vh', background: '#fff' }}>
+    <Layout.Header style={{ width: '100vw', height: 50, background: "#a9d872", boxShadow: '1px 1px 5px 1px #fff' }}>
+      <Image src='/icons/sprout.svg' alt='sprout' width={100} blurDataURL={true} height={50} />
+    </Layout.Header>
+    <Row justify='center' align='middle' style={{ height: '100vh' }}>
+      <Card style={{ background: '#f7f7f7', boxShadow: '3px 3px 15px 3px rgb(50,50,50,.5)', borderRadius: 5 }}>
+        <Col span={24}>
+          <Row justify='center' align='middle'>
+            <Typography.Title level={3}>
+              {name}
+            </Typography.Title>
           </Row>
-          <Row justify='center'>จำนวนเงิน 100 บาท</Row>
-          <Row justify='center'>**ใบชำระเงินนี้หมดอายุเวลา {dayjs(Date.now() + 1000 * 60).format('YYYY-MM-DD HH:mm:ss')}</Row>
-        </Card>
-      </Row>
-    </Layout >
-  return <>Loading...</>
+        </Col >
+        <Col span={24}>
+          <Row justify='center' align='middle'>
+            <Image src={`data:image/jpeg;base64,${qrUrl}`} blurDataURL={true} width={200} height={200} />
+          </Row>
+        </Col >
+        <Col span={24}>
+          <Row justify='center' align='middle'>
+            <Typography.Title level={4}>
+              จำนวนเงิน {price} บาท
+            </Typography.Title>
+          </Row>
+        </Col >
+        <Col span={24}>
+          **ใบชำระเงินนี้หมดอายุเวลา {dayjs(Date.now() + 1000 * 60 * 60).format('YYYY-MM-DD HH:mm:ss')}
+        </Col>
+      </Card>
+    </Row>
+  </Layout>
 }
 
-// interface Query {
-//   payeeProxyId:           string;
-//   payeeProxyType:         string;
-//   payeeAccountNumber:     string;
-//   payeeName:              string;
-//   payerProxyId:           string;
-//   payerProxyType:         string;
-//   payerAccountNumber:     string;
-//   payerName:              string;
-//   sendingBankCode:        string;
-//   receivingBankCode:      string;
-//   amount:                 number;
-//   channelCode:            string;
-//   transactionId:          string;
-//   transactionDateandTime: Date;
-//   billPaymentRef1:        string;
-//   billPaymentRef2:        string;
-//   billPaymentRef3:        string;
-//   currencyCode:           string;
-//   transactionType:        string;
-// }
+export async function getServerSideProps(ctx) {
+  const { name, price } = ctx.query;
 
-// export async function getServerSideProps(ctx) {
-// const query = {
-//   name,
-//   callbackUrl,
-//   price,
-//   token
-// }
-// console.log(ctx)
-// console.log()
-
-// return {
-//   props: {
-//     structure: query
-//   }
-// }
-// }
+  return {
+    props: {
+      name,
+      callbackUrl,
+      price,
+      expired
+      // token
+    }
+  }
+}
 
 export default Index
