@@ -1,9 +1,10 @@
-
-// const dev = process.env.NEXT_PUBLIC_NODE_ENV == true ? true : false;
-const next = require('next')({ dev: false })
+const dev = process.env.NEXT_PUBLIC_NODE_ENV == 'false' ? false : true;
+const next = require('next')({ dev })
 const handle = next.getRequestHandler()
 const app = require('express')();
 const expressWs = require('express-ws')(app);
+
+console.log(typeof (process.env.NEXT_PUBLIC_NODE_ENV))
 
 next.prepare().then(() => {
     expressWs.app.ws('/wait', function (ws, req) {
