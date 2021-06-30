@@ -80,7 +80,7 @@ const Index = ({
 }
 
 export async function getServerSideProps(ctx) {
-  const { name, price } = ctx.query;
+  const { name, price, callbackUrl, expired } = ctx.query;
 
   return {
     props: {
